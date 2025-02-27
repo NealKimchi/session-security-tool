@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JWT Token Analyzer</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        /* Match the dashboard styling */
+        .dashboard-container {
+            max-width: 900px;
+            margin: 20px auto;
+            padding: 20px;
+        }
+        
+        .token-box {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            border: 1px solid #dee2e6;
+            overflow-wrap: break-word;
+        }
+        
+        .token-input {
+            font-family: monospace;
+            padding: 10px;
+            background-color: #fff;
+            border: 1px solid #dee2e6;
+            border-radius: 3px;
+        }
+        
+        .token-data {
+            font-family: monospace;
+            padding: 10px;
+            background-color: #fff;
+            border: 1px solid #dee2e6;
+            border-radius: 3px;
+            margin-top: 10px;
+        }
+        
+        pre {
+            background-color: #f5f5f5;
+            padding: 15px;
+            border-radius: 5px;
+            border: 1px solid #dee2e6;
+            margin: 0;
+        }
+        
+        .security-badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 3px;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .severity-high, .security-low {
+            background-color: #dc3545;
+            color: white;
+        }
+        
+        .severity-medium, .security-medium {
+            background-color: #ffc107;
+            color: #212529;
+        }
+        
+        .severity-low, .security-high {
+            background-color: #28a745;
+            color: white;
+        }
+        
+        .security-unknown {
+            background-color: #6c757d;
+        }
+        
+        /* Fix for Bootstrap 5 spacing */
+        .ml-2 {
+            margin-left: 0.5rem !important;
+        }
+        
+        .ms-2 {
+            margin-left: 0.5rem !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1>JWT Token Analyzer</h1>
+            <a href="{{ url_for('dashboard') }}" class="btn btn-outline-secondary">Back to Dashboard</a>
+        </div>
+        <p class="lead">Analyze JWT tokens for vulnerabilities and security threats</p>
+        <hr>
+
+        <div class="card mb-4">
+            <div class="card-header">
+                <h4>Token Analysis</h4>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('analyzer') }}">
+                    <div class="mb-3">
+                        <label for="token" class="form-label">JWT Token:</label>
+                        <textarea class="form-control token-input" id="token" name="token" rows="4" required>{{ token }}</textarea>
+                    </div>
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="checkbox" id="attempt_exploits" name="attempt_exploits">
+                        <label class="form-check-label" for="attempt_exploits">
+                            Attempt to exploit vulnerabilities
+                        </label>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Analyze Token</button>
+                    <a href="{{ url_for('dashboard') }}" class="btn btn-outline-secondary ms-2">Back to Dashboard</a>
+                </form>
+            </div>
+        </div>
+
+        {% if result %}
+        <h3 class="mt-4 mb-3">Analysis Results</h3>
+        
+        {% if result.error %}
+        <div class="alert alert-danger">
+            <strong>Error:</strong> {{ result.error }}
+        </div>
+        {% else %}
+        
+        <div class="card mb-4">
+            <div class="card-header">
+                <h4 class="mb-0">Token Overview</h4>
+            </div>
+            <div class="card-body">
+                <table class="table">
+                    <tbody>
+                        {% for key, value in result.overview.items() %}
+                        <tr>
+                            <th style="width: 30%">{{ key|replace('_', ' ')|title }}</th>
+                            <td>{{ value }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-header">
+                <h4 class="mb-0">Token Header</h4>
+            </div>
+            <div class="card-body">
+                <pre>{{ result.token_data.header|tojson(indent=2) }}</pre>
+            </div>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-header">
+                <h4 class="mb-0">Token Payload</h4>
+            </div>
+            <div class="card-body">
+                <pre>{{ result.token_data.payload|tojson(indent=2) }}</pre>
+            </div>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-header">
+                <h4 class="mb-0">Vulnerabilities</h4>
+            </div>
+            <div class="card-body">
+                {% if result.vulnerabilities %}
+                <ul class="list-group">
+                    {% for vuln in result.vulnerabilities %}
+                    <li class="list-group-item">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h5 class="mb-1">{{ vuln.title }}</h5>
+                            <span class="security-badge severity-{{ vuln.severity|lower }}">{{ vuln.severity }}</span>
+                        </div>
+                        <p class="mb-1">{{ vuln.description }}</p>
+                        {% if vuln.remediation %}
+                        <small class="text-muted"><strong>Remediation:</strong> {{ vuln.remediation }}</small>
+                        {% endif %}
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <p class="text-success">No vulnerabilities detected.</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-header">
+                <h4 class="mb-0">Security Threats</h4>
+            </div>
+            <div class="card-body">
+                {% if result.threats %}
+                <ul class="list-group">
+                    {% for threat in result.threats %}
+                    <li class="list-group-item">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h5 class="mb-1">{{ threat.title }}</h5>
+                            <span class="security-badge severity-{{ threat.severity|lower }}">{{ threat.severity }}</span>
+                        </div>
+                        <p class="mb-1">{{ threat.description }}</p>
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <p class="text-success">No security threats detected.</p>
+                {% endif %}
+            </div>
+        </div>
+
+        {% if result.exploits %}
+        <div class="card mb-4">
+            <div class="card-header">
+                <h4 class="mb-0">Exploit Attempts</h4>
+            </div>
+            <div class="card-body">
+                <ul class="list-group">
+                    {% for name, exploit in result.exploits.items() %}
+                    <li class="list-group-item">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h5 class="mb-1">{{ name }}</h5>
+                            {% if exploit.success %}
+                            <span class="security-badge severity-high">Vulnerable!</span>
+                            {% else %}
+                            <span class="security-badge severity-low">Not Vulnerable</span>
+                            {% endif %}
+                        </div>
+                        {% if exploit.details %}
+                        <p class="mb-1">{{ exploit.details }}</p>
+                        {% endif %}
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        {% endif %}
+        
+        {% endif %}
+        {% endif %}
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

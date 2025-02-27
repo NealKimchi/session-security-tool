@@ -7,7 +7,16 @@ from flask import Flask, render_template, request, make_response, redirect, url_
 import secrets
 import datetime
 import os
+import sys
 from functools import wraps
+
+# Add the correct path to the scripts directory
+current_dir = os.path.abspath(os.path.dirname(__file__))
+project_root = os.path.abspath(os.path.join(current_dir, "../.."))
+sys.path.append(project_root)
+
+# Now import from scripts directory
+from scripts.run_analyzer import analyze_token
 
 app = Flask(__name__)
 app.secret_key = secrets.token_hex(16)  # Generate a random secret key
@@ -233,7 +242,7 @@ def dashboard():
                           username=username, 
                           security_level=security_level,
                           expiration=expiration_str,
-                          token=token)
+                          session_token=token)
 
 @app.route('/logout')
 def logout():
@@ -373,6 +382,30 @@ def create_vulnerable_token():
     except Exception as e:
         print(f"Error creating vulnerable token: {str(e)}")
         return jsonify({"error": f"Error creating vulnerable token: {str(e)}"}), 500
+
+# New route for token analyzer
+@app.route('/analyzer', methods=['GET', 'POST'])
+def analyzer():
+    """Route to analyze JWT tokens using the external analyzer script."""
+    result = None
+    token = request.args.get('token', '')  # Get token from query string if provided
+    
+    # If no token in query string, try to get from current session
+    if not token:
+        token = request.cookies.get('session_token', '')
+    
+    if request.method == 'POST':
+        token = request.form.get('token', '').strip()
+        attempt_exploits = 'attempt_exploits' in request.form
+        
+        if token:
+            try:
+                # Call the analyze_token function from run_analyzer.py
+                result = analyze_token(token, secret_key=None, attempt_exploits=attempt_exploits)
+            except Exception as e:
+                result = {"error": str(e), "token": token}
+    
+    return render_template('analyzer.html', token=token, result=result)
 
 if __name__ == '__main__':
     app.run(debug=True, port=5001)

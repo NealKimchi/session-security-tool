@@ -90,10 +90,15 @@
             <div class="card-body">
                 <div class="token-box">
                     <h5>Your Current Token:</h5>
-                    <div class="token-data">{{ token }}</div>
-                    <button class="btn btn-sm btn-outline-secondary mt-2" onclick="decodeToken()">
-                        Decode Token
-                    </button>
+                    <div class="token-data">{{ session_token }}</div>
+                    <div class="mt-2">
+                        <button class="btn btn-sm btn-outline-secondary" onclick="decodeToken()">
+                            Decode Token
+                        </button>
+                        <a href="{{ url_for('analyzer', token=session_token) }}" class="btn btn-sm btn-info ms-2">
+                            Analyze Token
+                        </a>
+                    </div>
                 </div>
                 
                 <div id="decoded-token" class="token-box mt-3" style="display: none;">
@@ -132,7 +137,7 @@
     <script>
         function decodeToken() {
             // Get the token from cookies instead of using the template variable
-            const token = getCookie('session_token') || "{{ token }}";
+            const token = getCookie('session_token') || "{{ session_token }}";
             
             // Simple JWT decoder (client-side for demonstration)
             function parseJwt(token) {
@@ -178,7 +183,10 @@
                         <p><strong>Vulnerable token created:</strong></p>
                         <div class="token-data">${data.token}</div>
                         <p class="mt-2">The vulnerable token has been applied. No need to refresh - your session now uses this token.</p>
-                        <button class="btn btn-sm btn-info mt-2" onclick="decodeToken()">Decode This Token</button>
+                        <div class="mt-2">
+                            <button class="btn btn-sm btn-info me-2" onclick="decodeToken()">Decode This Token</button>
+                            <a href="/analyzer?token=${encodeURIComponent(data.token)}" class="btn btn-sm btn-warning">Analyze This Token</a>
+                        </div>
                     `;
                     // Set decoded token visible automatically
                     document.getElementById('decoded-token').style.display = 'block';
@@ -192,3 +200,5 @@
                 });
         }
     </script>
+</body>
+</html>
