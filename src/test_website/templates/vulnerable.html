@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vulnerable Demo - Session Security</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        .container {
+            max-width: 800px;
+            margin: 30px auto;
+            padding: 20px;
+        }
+        
+        .vulnerability-card {
+            margin-bottom: 20px;
+            border-left: 4px solid #dc3545;
+        }
+        
+        .code-block {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: monospace;
+            white-space: pre-wrap;
+        }
+        
+        .attack-simulator {
+            margin-top: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="text-danger">Vulnerable Session Demo</h1>
+            <a href="/" class="btn btn-outline-secondary">Back to Home</a>
+        </div>
+        
+        <div class="alert alert-warning">
+            <h4 class="alert-heading">Educational Purpose Only</h4>
+            <p>This page demonstrates common session management vulnerabilities for educational purposes. These vulnerabilities should <strong>never</strong> be present in a production application.</p>
+        </div>
+        
+        <h2 class="mt-4 mb-3">Common Session Vulnerabilities</h2>
+        
+        <div class="card vulnerability-card">
+            <div class="card-header">
+                <h3>Vulnerability #1: Weak Secret Key</h3>
+            </div>
+            <div class="card-body">
+                <p>JWT tokens signed with a weak, predictable, or publicly known secret key can be easily forged by attackers.</p>
+                <p>This allows attackers to modify the token's contents and create valid signatures.</p>
+                
+                <div class="code-block">
+// Vulnerable token generation
+const payload = { user: "guest", role: "user" };
+const weakKey = "weak_secret";  // Easily guessable
+const token = jwt.sign(payload, weakKey);
+                </div>
+                
+                <button class="btn btn-danger mt-3" onclick="createVulnerableToken('none_alg')">
+                    Try This Vulnerability
+                </button>
+            </div>
+        </div>
+        
+        <div class="card vulnerability-card">
+            <div class="card-header">
+                <h3>Vulnerability #2: Missing Expiration</h3>
+            </div>
+            <div class="card-body">
+                <p>Tokens without an expiration date remain valid indefinitely, allowing continued access even after a user should be logged out.</p>
+                
+                <div class="code-block">
+// Token with no expiration
+const payload = { user: "guest", role: "user" };
+// Missing 'exp' claim
+const token = jwt.sign(payload, secretKey);
+                </div>
+                
+                <button class="btn btn-danger mt-3" onclick="testVulnerability('missing_expiration')">
+                    Test Missing Expiration
+                </button>
+            </div>
+        </div>
+        
+        <div class="card vulnerability-card">
+            <div class="card-header">
+                <h3>Vulnerability #3: Weak Secret Keys</h3>
+            </div>
+            <div class="card-body">
+                <p>Tokens signed with weak or guessable secret keys can be forged by attackers.</p>
+                
+                <div class="code-block">
+// Weak secret key
+const weakKey = "password123";  // Easily guessable
+const payload = { user: "guest", role: "user" };
+const token = jwt.sign(payload, weakKey);
+                </div>
+                
+                <button class="btn btn-danger mt-3" onclick="testVulnerability('weak_secret')">
+                    Test Weak Secret Key
+                </button>
+            </div>
+        </div>
+        
+        <div class="card vulnerability-card">
+            <div class="card-header">
+                <h3>Vulnerability #4: Missing HttpOnly Flag</h3>
+            </div>
+            <div class="card-body">
+                <p>When cookies lack the HttpOnly flag, they can be accessed by JavaScript, making them vulnerable to XSS attacks.</p>
+                
+                <div class="code-block">
+// Setting a cookie without HttpOnly flag
+res.cookie('session_token', token, {
+    httpOnly: false,  // Accessible via JavaScript
+    secure: false     // Transmitted over HTTP
+});
+                </div>
+                
+                <div class="alert alert-info">
+                    <p>Current session cookie JavaScript access test:</p>
+                    <div id="cookie-access-test"></div>
+                    <button class="btn btn-sm btn-primary mt-2" onclick="testCookieAccess()">
+                        Test Cookie Access
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="attack-simulator">
+            <h3>Attack Simulator</h3>
+            <p>Use these tools to simulate common session attacks:</p>
+            
+            <div class="mb-3">
+                <label for="tokenInput" class="form-label">Session Token:</label>
+                <textarea class="form-control" id="tokenInput" rows="3" placeholder="Paste a session token here"></textarea>
+            </div>
+            
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <button class="btn btn-warning w-100" onclick="decodeToken()">
+                        Decode Token
+                    </button>
+                </div>
+                <div class="col-md-6">
+                    <button class="btn btn-danger w-100" onclick="modifyToken()">
+                        Modify & Sign Token
+                    </button>
+                </div>
+            </div>
+            
+            <div id="token-manipulation-result" style="display: none;">
+                <h4>Result:</h4>
+                <div id="token-result-content" class="code-block"></div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Function to decode JWT token
+        function decodeToken() {
+            const token = document.getElementById('tokenInput').value.trim();
+            if (!token) {
+                alert('Please enter a token');
+                return;
+            }
+            
+            try {
+                const [headerB64, payloadB64] = token.split('.');
+                
+                // Decode header
+                const headerStr = atob(headerB64.replace(/-/g, '+').replace(/_/g, '/'));
+                const header = JSON.parse(headerStr);
+                
+                // Decode payload
+                const payloadStr = atob(payloadB64.replace(/-/g, '+').replace(/_/g, '/'));
+                const payload = JSON.parse(payloadStr);
+                
+                // Display result
+                const resultContainer = document.getElementById('token-result-content');
+                resultContainer.innerHTML = `<strong>Header:</strong> ${JSON.stringify(header, null, 2)}\n\n<strong>Payload:</strong> ${JSON.stringify(payload, null, 2)}`;
+                document.getElementById('token-manipulation-result').style.display = 'block';
+            } catch (e) {
+                alert('Invalid token format: ' + e.message);
+            }
+        }
+        
+        // Function to modify token (simulated for educational purposes)
+        function modifyToken() {
+            const token = document.getElementById('tokenInput').value.trim();
+            if (!token) {
+                alert('Please enter a token');
+                return;
+            }
+            
+            try {
+                const [headerB64, payloadB64, signature] = token.split('.');
+                
+                // Decode payload
+                const payloadStr = atob(payloadB64.replace(/-/g, '+').replace(/_/g, '/'));
+                const payload = JSON.parse(payloadStr);
+                
+                // Modify payload (for demonstration)
+                payload.role = "admin";  // Escalate privileges
+                
+                // Encode modified payload
+                const modifiedPayloadStr = JSON.stringify(payload);
+                const modifiedPayloadB64 = btoa(modifiedPayloadStr)
+                    .replace(/\+/g, '-')
+                    .replace(/\//g, '_')
+                    .replace(/=/g, '');
+                
+                // Create modified token (with original signature)
+                const modifiedToken = `${headerB64}.${modifiedPayloadB64}.${signature}`;
+                
+                // Display result
+                const resultContainer = document.getElementById('token-result-content');
+                resultContainer.innerHTML = `<strong>Modified Token:</strong>\n${modifiedToken}\n\n<strong>Changes Made:</strong>\nEscalated user role to "admin"`;
+                document.getElementById('token-manipulation-result').style.display = 'block';
+            } catch (e) {
+                alert('Token modification failed: ' + e.message);
+            }
+        }
+        
+        // Function to test cookie accessibility
+        function testCookieAccess() {
+            const resultDiv = document.getElementById('cookie-access-test');
+            const sessionToken = getCookie('session_token');
+            
+            if (sessionToken) {
+                resultDiv.innerHTML = `<div class="alert alert-danger">Vulnerability detected! Session token is accessible: <code>${sessionToken.substring(0, 20)}...</code></div>`;
+            } else {
+                resultDiv.innerHTML = '<div class="alert alert-success">Good! Session token is not accessible via JavaScript.</div>';
+            }
+        }
+        
+        // Helper function to get cookie by name
+        function getCookie(name) {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return parts.pop().split(';').shift();
+            return null;
+        }
+        
+        // Function to create vulnerable token via API
+        function createVulnerableToken(type) {
+            fetch(`/api/create-vulnerable-token?type=${type}`)
+                .then(response => response.json())
+                .then(data => {
+                    alert('Vulnerable token created and set as your session token. Refresh the page to see the effect.');
+                    location.reload();
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error creating vulnerable token: ' + error.message);
+                });
+        }
+        
+        // Function to test other vulnerabilities
+        function testVulnerability(type) {
+            alert(`This would demonstrate the "${type}" vulnerability in a real environment. For educational purposes only.`);
+        }
+    </script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

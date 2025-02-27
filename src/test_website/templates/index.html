@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Session Security Demo</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        .security-demo {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .feature-box {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 20px;
+            background-color: #f9f9f9;
+        }
+        
+        .security-level {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 3px;
+            color: white;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        
+        .security-high {
+            background-color: #28a745;
+        }
+        
+        .security-medium {
+            background-color: #ffc107;
+            color: #212529;
+        }
+        
+        .security-low {
+            background-color: #dc3545;
+        }
+    </style>
+</head>
+<body>
+    <div class="security-demo">
+        <h1 class="mb-4">Session Security Testing Environment</h1>
+        
+        <div class="feature-box">
+            <h2>Welcome to the Session Security Demo</h2>
+            <p>This is a testing environment for exploring session management security features and vulnerabilities.</p>
+            <p>Use this site to generate different types of session tokens and simulate various security scenarios.</p>
+            
+            <a href="/login" class="btn btn-primary me-2">Login</a>
+            <a href="/vulnerable" class="btn btn-danger">Vulnerable Demo</a>
+        </div>
+        
+        <div class="feature-box">
+            <h3>Available Security Levels</h3>
+            <p>When logging in, you can choose from three security levels:</p>
+            
+            <div class="mb-3">
+                <span class="security-level security-high">High</span>
+                <ul>
+                    <li>Strong algorithm (HS256)</li>
+                    <li>Short expiration time (1 hour)</li>
+                    <li>HttpOnly flag enabled</li>
+                    <li>Secure flag enabled</li>
+                    <li>SameSite=Strict</li>
+                </ul>
+            </div>
+            
+            <div class="mb-3">
+                <span class="security-level security-medium">Medium</span>
+                <ul>
+                    <li>Strong algorithm (HS256)</li>
+                    <li>Longer expiration time (24 hours)</li>
+                    <li>HttpOnly flag enabled</li>
+                    <li>Secure flag disabled</li>
+                    <li>SameSite=Lax</li>
+                </ul>
+            </div>
+            
+            <div>
+                <span class="security-level security-low">Low</span>
+                <ul>
+                    <li>Strong algorithm but weak secret key (HS256 with "weak_secret")</li>
+                    <li>Very long expiration time (7 days)</li>
+                    <li>HttpOnly flag disabled</li>
+                    <li>Secure flag disabled</li>
+                    <li>SameSite not set</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="feature-box">
+            <h3>Project Purpose</h3>
+            <p>This website is part of a computer security class project for testing a session management analysis tool. It deliberately includes vulnerabilities for educational purposes.</p>
+            <p><strong>Warning:</strong> Do not use this code in a production environment.</p>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
