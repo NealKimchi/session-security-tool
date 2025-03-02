@@ -82,6 +82,51 @@
         .ms-2 {
             margin-left: 0.5rem !important;
         }
+    
+        /* New styles for vulnerability details */
+        .vulnerability-details {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-left: 4px solid #dc3545;
+            border-radius: 0 4px 4px 0;
+        }
+        
+        .exploit-details {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-left: 4px solid #dc3545;
+            border-radius: 0 4px 4px 0;
+        }
+    
+        .vuln-technical {
+            font-family: monospace;
+            font-size: 0.9rem;
+            padding: 8px;
+            background-color: #f1f1f1;
+            border-radius: 4px;
+            margin-top: 8px;
+        }
+        
+        .affected-code {
+            background-color: #ffebee;
+            border-left: 3px solid #f44336;
+            padding: 10px;
+            margin-top: 8px;
+            font-family: monospace;
+            font-size: 0.9rem;
+        }
+        
+        /* Spacing between list items */
+        .list-group-item {
+            margin-bottom: 15px;
+        }
+        
+        /* Remove margin from the last item to prevent extra space */
+        .list-group-item:last-child {
+            margin-bottom: 0;
+        }
     </style>
 </head>
 <body>
@@ -174,8 +219,38 @@
                             <span class="security-badge severity-{{ vuln.severity|lower }}">{{ vuln.severity }}</span>
                         </div>
                         <p class="mb-1">{{ vuln.description }}</p>
+                        
+                        <!-- Enhanced vulnerability details section -->
+                        <div class="vulnerability-details">
+                            <strong>Why this is vulnerable:</strong>
+                            <p>{{ vuln.reason if vuln.reason else "The token contains a security flaw that could be exploited by attackers." }}</p>
+                            
+                            {% if vuln.technical_details %}
+                            <div class="vuln-technical">
+                                <strong>Technical Details:</strong><br>
+                                {{ vuln.technical_details }}
+                            </div>
+                            {% endif %}
+                            
+                            {% if vuln.affected_code %}
+                            <div class="affected-code">
+                                {{ vuln.affected_code }}
+                            </div>
+                            {% endif %}
+                            
+                            {% if vuln.attack_vector %}
+                            <p><strong>Attack Vector:</strong> {{ vuln.attack_vector }}</p>
+                            {% endif %}
+                            
+                            {% if vuln.impact %}
+                            <p><strong>Impact:</strong> {{ vuln.impact }}</p>
+                            {% endif %}
+                        </div>
+                        
                         {% if vuln.remediation %}
-                        <small class="text-muted"><strong>Remediation:</strong> {{ vuln.remediation }}</small>
+                        <div class="mt-3">
+                            <strong>Remediation:</strong> {{ vuln.remediation }}
+                        </div>
                         {% endif %}
                     </li>
                     {% endfor %}
@@ -200,6 +275,21 @@
                             <span class="security-badge severity-{{ threat.severity|lower }}">{{ threat.severity }}</span>
                         </div>
                         <p class="mb-1">{{ threat.description }}</p>
+                        
+                        <!-- Enhanced threat details section -->
+                        {% if threat.reason %}
+                        <div class="vulnerability-details">
+                            <strong>Why this is a threat:</strong>
+                            <p>{{ threat.reason }}</p>
+                            
+                            {% if threat.technical_details %}
+                            <div class="vuln-technical">
+                                <strong>Technical Details:</strong><br>
+                                {{ threat.technical_details }}
+                            </div>
+                            {% endif %}
+                        </div>
+                        {% endif %}
                     </li>
                     {% endfor %}
                 </ul>
@@ -226,8 +316,43 @@
                             <span class="security-badge severity-low">Not Vulnerable</span>
                             {% endif %}
                         </div>
+                        
                         {% if exploit.details %}
                         <p class="mb-1">{{ exploit.details }}</p>
+                        {% endif %}
+                        
+                        <!-- Enhanced exploit details section -->
+                        {% if exploit.success and exploit.reason %}
+                        <div class="exploit-details">
+                            <strong>Why the exploit succeeded:</strong>
+                            <p>{{ exploit.reason }}</p>
+                            
+                            {% if exploit.technical_details %}
+                            <div class="vuln-technical">
+                                <strong>Technical Details:</strong><br>
+                                {{ exploit.technical_details }}
+                            </div>
+                            {% endif %}
+                            
+                            {% if exploit.proof_of_concept %}
+                            <div class="mt-2">
+                                <strong>Proof of Concept:</strong>
+                                <div class="affected-code">
+                                    {{ exploit.proof_of_concept }}
+                                </div>
+                            </div>
+                            {% endif %}
+                            
+                            {% if exploit.impact %}
+                            <p><strong>Impact:</strong> {{ exploit.impact }}</p>
+                            {% endif %}
+                        </div>
+                        {% endif %}
+                        
+                        {% if exploit.mitigation %}
+                        <div class="mt-3">
+                            <strong>Mitigation:</strong> {{ exploit.mitigation }}
+                        </div>
                         {% endif %}
                     </li>
                     {% endfor %}
