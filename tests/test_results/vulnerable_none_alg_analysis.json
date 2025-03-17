@@ -1,0 +1,172 @@
+{
+  "token": "eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJzdWIiOiJhZG1pbiIsIm5hbWUiOiJBZG1pbmlzdHJhdG9yIiwicm9sZSI6ImFkbWluIn0.",
+  "timestamp": "2025-03-16T20:21:34.317169",
+  "overview": {
+    "algorithm": "none",
+    "token_type": "JWT",
+    "is_expired": false,
+    "issuer": "unknown",
+    "subject": "admin",
+    "audience": "unknown",
+    "issued_at": null,
+    "expires_at": null
+  },
+  "token_data": {
+    "header": {
+      "alg": "none",
+      "typ": "JWT"
+    },
+    "payload": {
+      "sub": "admin",
+      "name": "Administrator",
+      "role": "admin"
+    },
+    "signature": "",
+    "is_expired": false,
+    "expiry_time": null,
+    "issue_time": null,
+    "raw_token": "eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJzdWIiOiJhZG1pbiIsIm5hbWUiOiJBZG1pbmlzdHJhdG9yIiwicm9sZSI6ImFkbWluIn0."
+  },
+  "expiration_analysis": {
+    "has_expiration": false,
+    "is_expired": false,
+    "time_until_expiry": null,
+    "total_lifetime": null,
+    "time_since_issue": null,
+    "percentage_lifetime_remaining": null,
+    "issues": [
+      {
+        "id": "no_expiration",
+        "description": "Token does not have an expiration time",
+        "severity": "Critical"
+      },
+      {
+        "id": "missing_nbf",
+        "description": "Token is missing the 'nbf' (not before) claim",
+        "severity": "Low"
+      }
+    ]
+  },
+  "vulnerabilities": [
+    {
+      "id": "none_algorithm",
+      "title": "The token uses the 'none' algorithm",
+      "severity": "Critical",
+      "description": "The 'none' algorithm means the token has no signature validation, allowing attackers to forge tokens."
+    },
+    {
+      "id": "weak_algorithm",
+      "title": "The token uses a weak algorithm: none",
+      "severity": "High",
+      "description": "The algorithm 'none' is considered insecure for JWT signatures."
+    },
+    {
+      "id": "no_expiration",
+      "title": "The token does not have an expiration time",
+      "severity": "High",
+      "description": "Without an expiration time, the token will remain valid indefinitely, increasing the risk if it gets compromised."
+    },
+    {
+      "id": "missing_claims",
+      "title": "The token is missing recommended claims: 'iat' (issued at), 'nbf' (not before), 'jti' (JWT ID), 'iss' (issuer), 'aud' (audience)",
+      "severity": "Low",
+      "description": "These claims enhance token security by allowing more precise validation rules."
+    },
+    {
+      "id": "admin_privileges",
+      "title": "The token contains administrative privileges",
+      "severity": "Medium",
+      "description": "Tokens with admin privileges should be short-lived and carefully protected. Consider using principle of least privilege."
+    }
+  ],
+  "threats": [
+    {
+      "id": "none_algorithm_attack",
+      "title": "Token uses the 'none' algorithm, which is vulnerable to signature bypass",
+      "severity": "Critical",
+      "description": "This is a known attack pattern where attackers try to bypass signature verification."
+    },
+    {
+      "id": "missing_jti",
+      "title": "Token does not have a JWT ID (jti) claim",
+      "severity": "Medium",
+      "description": "Without a unique identifier, it's harder to implement token revocation and detect token reuse."
+    },
+    {
+      "id": "signature_stripping",
+      "title": "Token has an empty signature part",
+      "severity": "Critical",
+      "description": "This may be an attempt to bypass signature verification."
+    }
+  ],
+  "risk_assessment": {
+    "risk_score": 100,
+    "risk_level": "Critical",
+    "vulnerability_count": {
+      "Critical": 3,
+      "High": 2,
+      "Medium": 2,
+      "Low": 1
+    },
+    "total_issues": 8,
+    "severe_issues": [
+      {
+        "id": "none_algorithm",
+        "title": "The token uses the 'none' algorithm",
+        "severity": "Critical",
+        "description": "The 'none' algorithm means the token has no signature validation, allowing attackers to forge tokens."
+      },
+      {
+        "id": "weak_algorithm",
+        "title": "The token uses a weak algorithm: none",
+        "severity": "High",
+        "description": "The algorithm 'none' is considered insecure for JWT signatures."
+      },
+      {
+        "id": "no_expiration",
+        "title": "The token does not have an expiration time",
+        "severity": "High",
+        "description": "Without an expiration time, the token will remain valid indefinitely, increasing the risk if it gets compromised."
+      },
+      {
+        "id": "none_algorithm_attack",
+        "title": "Token uses the 'none' algorithm, which is vulnerable to signature bypass",
+        "severity": "Critical",
+        "description": "This is a known attack pattern where attackers try to bypass signature verification."
+      },
+      {
+        "id": "signature_stripping",
+        "title": "Token has an empty signature part",
+        "severity": "Critical",
+        "description": "This may be an attempt to bypass signature verification."
+      }
+    ],
+    "expiration_risk": "Medium"
+  },
+  "recommendations": [
+    "Use a strong, industry-standard algorithm such as HS256, RS256, or ES256 for token signatures.",
+    "Always include an expiration time (exp) claim in your tokens.",
+    "Include recommended JWT claims such as 'iat' (issued at), 'nbf' (not before), 'jti' (JWT ID), 'iss' (issuer), and 'aud' (audience) to enhance security.",
+    "Set secure cookie attributes: HttpOnly (prevents JavaScript access), Secure (requires HTTPS), and SameSite=Strict (prevents CSRF attacks).",
+    "Follow the principle of least privilege. Only include the permissions that are strictly necessary for the token's purpose.",
+    "Implement token validation on all protected routes, checking for valid signatures, expiration times, and appropriate scopes/permissions.",
+    "Rotate signing keys periodically. Implement a key rotation strategy that allows for seamless transition between old and new keys."
+  ],
+  "exploits": {
+    "none_algorithm": {
+      "success": true,
+      "modified_token": "eyJhbGciOiAibm9uZSIsICJ0eXAiOiAiSldUIn0.eyJzdWIiOiJhZG1pbiIsIm5hbWUiOiJBZG1pbmlzdHJhdG9yIiwicm9sZSI6ImFkbWluIn0.",
+      "description": "Attempted to bypass signature validation by changing algorithm to 'none'"
+    },
+    "header_manipulation": {
+      "success": true,
+      "modified_token": "eyJhbGciOiAibm9uZSIsICJ0eXAiOiAiSldUIiwgImp3ayI6IHsia3R5IjogIm9jdCIsICJrIjogIiJ9fQ.eyJzdWIiOiJhZG1pbiIsIm5hbWUiOiJBZG1pbmlzdHJhdG9yIiwicm9sZSI6ImFkbWluIn0.",
+      "description": "Attempted to manipulate header parameters"
+    },
+    "weak_key": {
+      "success": false,
+      "cracked_secret": null,
+      "description": "Attempted to crack the token using common weak secrets"
+    }
+  }
+}

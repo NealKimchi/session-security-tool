@@ -6,7 +6,7 @@ This generates sample tokens with various security levels and analyzes them.
 
 import sys
 import os
-import jwt
+import jwt 
 import datetime
 import json
 from typing import Dict, Any
@@ -66,8 +66,8 @@ def generate_sample_tokens() -> Dict[str, Any]:
                 "name": "Administrator",
                 "role": "admin"
             },
-            "any_key",
-            algorithm="none"
+            None,  # Changed from "any_key" to None
+            algorithm="none
         ),
         "expired_token": jwt.encode(
             {

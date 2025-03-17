@@ -1,0 +1,49 @@
+{
+  "token_type": "sensitive_data",
+  "trials": 100,
+  "risk_assessment": {
+    "risk_score": 36,
+    "risk_level": "Medium",
+    "vulnerability_count": {
+      "Critical": 0,
+      "High": 3,
+      "Medium": 1,
+      "Low": 1
+    },
+    "total_issues": 5,
+    "severe_issues": [
+      {
+        "id": "sensitive_email",
+        "title": "The token contains potentially sensitive email data",
+        "severity": "High",
+        "description": "Storing sensitive data in JWT tokens is not recommended as they are typically only base64 encoded, not encrypted."
+      },
+      {
+        "id": "sensitive_credit_card",
+        "title": "The token contains potentially sensitive credit card data",
+        "severity": "High",
+        "description": "Storing sensitive data in JWT tokens is not recommended as they are typically only base64 encoded, not encrypted."
+      },
+      {
+        "id": "sensitive_password",
+        "title": "The token contains potentially sensitive password data",
+        "severity": "High",
+        "description": "Storing sensitive data in JWT tokens is not recommended as they are typically only base64 encoded, not encrypted."
+      }
+    ],
+    "expiration_risk": "Low"
+  },
+  "vulnerability_detection_rates": {
+    "missing_claims": "100.00%",
+    "sensitive_email": "100.00%",
+    "sensitive_credit_card": "100.00%",
+    "sensitive_password": "100.00%"
+  },
+  "threat_detection_rates": {
+    "missing_jti": "100.00%"
+  },
+  "exploit_success_rates": {
+    "none_algorithm": "100.00%",
+    "header_manipulation": "100.00%"
+  }
+}

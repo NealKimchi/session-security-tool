@@ -1,0 +1,104 @@
+{
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyMTIzIiwibmFtZSI6IkpvaG4gRG9lIiwicm9sZSI6InVzZXIiLCJpYXQiOjE3NDIxODE2OTQsImV4cCI6MTc0MjE4NTI5NCwibmJmIjoxNzQyMTgxNjk0LCJpc3MiOiJzZWN1cmUtYXBwIiwiYXVkIjoiYXBpIiwianRpIjoicmFuZG9tLXV1aWQtMTIzIn0.2FBGqvdjnRLYjPmfRxmH2Mb6cIPjZNSIikLliIzfH00",
+  "timestamp": "2025-03-16T20:21:34.315909",
+  "overview": {
+    "algorithm": "HS256",
+    "token_type": "JWT",
+    "is_expired": false,
+    "issuer": "secure-app",
+    "subject": "user123",
+    "audience": "api",
+    "issued_at": "2025-03-17 03:21:34+00:00",
+    "expires_at": "2025-03-17 04:21:34+00:00"
+  },
+  "token_data": {
+    "header": {
+      "alg": "HS256",
+      "typ": "JWT"
+    },
+    "payload": {
+      "sub": "user123",
+      "name": "John Doe",
+      "role": "user",
+      "iat": 1742181694,
+      "exp": 1742185294,
+      "nbf": 1742181694,
+      "iss": "secure-app",
+      "aud": "api",
+      "jti": "random-uuid-123"
+    },
+    "signature": "2FBGqvdjnRLYjPmfRxmH2Mb6cIPjZNSIikLliIzfH00",
+    "is_expired": false,
+    "expiry_time": "2025-03-17 04:21:34+00:00",
+    "issue_time": "2025-03-17 03:21:34+00:00",
+    "raw_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyMTIzIiwibmFtZSI6IkpvaG4gRG9lIiwicm9sZSI6InVzZXIiLCJpYXQiOjE3NDIxODE2OTQsImV4cCI6MTc0MjE4NTI5NCwibmJmIjoxNzQyMTgxNjk0LCJpc3MiOiJzZWN1cmUtYXBwIiwiYXVkIjoiYXBpIiwianRpIjoicmFuZG9tLXV1aWQtMTIzIn0.2FBGqvdjnRLYjPmfRxmH2Mb6cIPjZNSIikLliIzfH00"
+  },
+  "expiration_analysis": {
+    "has_expiration": true,
+    "is_expired": false,
+    "time_until_expiry": {
+      "days": 0,
+      "hours": 0,
+      "minutes": 59,
+      "seconds": 59
+    },
+    "total_lifetime": {
+      "days": 0,
+      "hours": 1,
+      "minutes": 0,
+      "seconds": 0,
+      "total_seconds": 3600.0
+    },
+    "time_since_issue": {
+      "days": 0,
+      "hours": 0,
+      "minutes": 0,
+      "seconds": 0
+    },
+    "percentage_lifetime_remaining": 99.99122391666667,
+    "issues": [
+      {
+        "id": "token_expiring_soon",
+        "description": "Token will expire in less than 1 hour",
+        "severity": "Medium"
+      }
+    ]
+  },
+  "vulnerabilities": [],
+  "threats": [],
+  "risk_assessment": {
+    "risk_score": 0,
+    "risk_level": "Low",
+    "vulnerability_count": {
+      "Critical": 0,
+      "High": 0,
+      "Medium": 0,
+      "Low": 0
+    },
+    "total_issues": 0,
+    "severe_issues": [],
+    "expiration_risk": "Low"
+  },
+  "recommendations": [
+    "Set secure cookie attributes: HttpOnly (prevents JavaScript access), Secure (requires HTTPS), and SameSite=Strict (prevents CSRF attacks).",
+    "Implement token validation on all protected routes, checking for valid signatures, expiration times, and appropriate scopes/permissions.",
+    "Rotate signing keys periodically. Implement a key rotation strategy that allows for seamless transition between old and new keys."
+  ],
+  "exploits": {
+    "none_algorithm": {
+      "success": true,
+      "modified_token": "eyJhbGciOiAibm9uZSIsICJ0eXAiOiAiSldUIn0.eyJzdWIiOiJ1c2VyMTIzIiwibmFtZSI6IkpvaG4gRG9lIiwicm9sZSI6InVzZXIiLCJpYXQiOjE3NDIxODE2OTQsImV4cCI6MTc0MjE4NTI5NCwibmJmIjoxNzQyMTgxNjk0LCJpc3MiOiJzZWN1cmUtYXBwIiwiYXVkIjoiYXBpIiwianRpIjoicmFuZG9tLXV1aWQtMTIzIn0.",
+      "description": "Attempted to bypass signature validation by changing algorithm to 'none'"
+    },
+    "header_manipulation": {
+      "success": true,
+      "modified_token": "eyJhbGciOiAiSFMyNTYiLCAidHlwIjogIkpXVCIsICJqd2siOiB7Imt0eSI6ICJvY3QiLCAiayI6ICIifX0.eyJzdWIiOiJ1c2VyMTIzIiwibmFtZSI6IkpvaG4gRG9lIiwicm9sZSI6InVzZXIiLCJpYXQiOjE3NDIxODE2OTQsImV4cCI6MTc0MjE4NTI5NCwibmJmIjoxNzQyMTgxNjk0LCJpc3MiOiJzZWN1cmUtYXBwIiwiYXVkIjoiYXBpIiwianRpIjoicmFuZG9tLXV1aWQtMTIzIn0.2FBGqvdjnRLYjPmfRxmH2Mb6cIPjZNSIikLliIzfH00",
+      "description": "Attempted to manipulate header parameters"
+    },
+    "weak_key": {
+      "success": false,
+      "cracked_secret": null,
+      "description": "Attempted to crack the token using common weak secrets"
+    }
+  }
+}

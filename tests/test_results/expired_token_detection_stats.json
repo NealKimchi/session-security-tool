@@ -1,0 +1,28 @@
+{
+  "token_type": "expired_token",
+  "trials": 100,
+  "risk_assessment": {
+    "risk_score": 11,
+    "risk_level": "Low",
+    "vulnerability_count": {
+      "Critical": 0,
+      "High": 0,
+      "Medium": 2,
+      "Low": 1
+    },
+    "total_issues": 3,
+    "severe_issues": [],
+    "expiration_risk": "High"
+  },
+  "vulnerability_detection_rates": {
+    "expired_token": "100.00%",
+    "missing_claims": "100.00%"
+  },
+  "threat_detection_rates": {
+    "missing_jti": "100.00%"
+  },
+  "exploit_success_rates": {
+    "none_algorithm": "100.00%",
+    "header_manipulation": "100.00%"
+  }
+}

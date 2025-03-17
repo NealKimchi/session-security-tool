@@ -1,0 +1,27 @@
+{
+  "token_type": "medium_security",
+  "trials": 100,
+  "risk_assessment": {
+    "risk_score": 6,
+    "risk_level": "Low",
+    "vulnerability_count": {
+      "Critical": 0,
+      "High": 0,
+      "Medium": 1,
+      "Low": 1
+    },
+    "total_issues": 2,
+    "severe_issues": [],
+    "expiration_risk": "Low"
+  },
+  "vulnerability_detection_rates": {
+    "missing_claims": "100.00%"
+  },
+  "threat_detection_rates": {
+    "missing_jti": "100.00%"
+  },
+  "exploit_success_rates": {
+    "none_algorithm": "100.00%",
+    "header_manipulation": "100.00%"
+  }
+}

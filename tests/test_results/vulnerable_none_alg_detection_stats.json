@@ -1,0 +1,64 @@
+{
+  "token_type": "vulnerable_none_alg",
+  "trials": 100,
+  "risk_assessment": {
+    "risk_score": 100,
+    "risk_level": "Critical",
+    "vulnerability_count": {
+      "Critical": 3,
+      "High": 2,
+      "Medium": 2,
+      "Low": 1
+    },
+    "total_issues": 8,
+    "severe_issues": [
+      {
+        "id": "none_algorithm",
+        "title": "The token uses the 'none' algorithm",
+        "severity": "Critical",
+        "description": "The 'none' algorithm means the token has no signature validation, allowing attackers to forge tokens."
+      },
+      {
+        "id": "weak_algorithm",
+        "title": "The token uses a weak algorithm: none",
+        "severity": "High",
+        "description": "The algorithm 'none' is considered insecure for JWT signatures."
+      },
+      {
+        "id": "no_expiration",
+        "title": "The token does not have an expiration time",
+        "severity": "High",
+        "description": "Without an expiration time, the token will remain valid indefinitely, increasing the risk if it gets compromised."
+      },
+      {
+        "id": "none_algorithm_attack",
+        "title": "Token uses the 'none' algorithm, which is vulnerable to signature bypass",
+        "severity": "Critical",
+        "description": "This is a known attack pattern where attackers try to bypass signature verification."
+      },
+      {
+        "id": "signature_stripping",
+        "title": "Token has an empty signature part",
+        "severity": "Critical",
+        "description": "This may be an attempt to bypass signature verification."
+      }
+    ],
+    "expiration_risk": "Medium"
+  },
+  "vulnerability_detection_rates": {
+    "none_algorithm": "100.00%",
+    "weak_algorithm": "100.00%",
+    "no_expiration": "100.00%",
+    "missing_claims": "100.00%",
+    "admin_privileges": "100.00%"
+  },
+  "threat_detection_rates": {
+    "none_algorithm_attack": "100.00%",
+    "missing_jti": "100.00%",
+    "signature_stripping": "100.00%"
+  },
+  "exploit_success_rates": {
+    "none_algorithm": "100.00%",
+    "header_manipulation": "100.00%"
+  }
+}
