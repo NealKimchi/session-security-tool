@@ -41,8 +41,8 @@ This tool was designed with an educational focus, making it ideal for learning a
 
 1. Extract the tarball:
    ```
-   tar -xzvf jwt-security-tool.tar.gz
-   cd jwt-security-tool
+   tar -xzvf session-security-tool.tar.gz
+   cd session-security-tool
    ```
 
 2. Create a virtual environment (recommended):
